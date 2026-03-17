@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.canteen.mapper.OrderMapper">
+
+    <!-- 一次性查出：总营收、总成本、订单数（含利润），仅统计已完成订单 -->
+    <select id="getOrderStats" resultType="java.util.HashMap">
+        SELECT
+            IFNULL(SUM(total_amount), 0) AS revenue,
+            IFNULL(SUM(total_cost), 0) AS cost,
+            IFNULL(SUM(total_amount - total_cost), 0) AS profit,
+            COUNT(id) AS orderCount
+        FROM orders
+        WHERE order_time &gt;= #{startTime} AND status = 'COMPLETED'
+    </select>
+
+    <!-- 统计趋势图：按日期分组 -->
+    <select id="getSalesTrend" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(order_time, '%m-%d') AS date,
+            COUNT(id) AS value
+        FROM orders
+        WHERE order_time &gt;= #{startTime}
+        GROUP BY DATE_FORMAT(order_time, '%m-%d')
+        ORDER BY date ASC
+    </select>
+
+    <!-- 管理端订单列表：带用户信息（用户名、下单地址） -->
+    <select id="selectAdminOrders" resultType="com.example.canteen.dto.OrderAdminView">
+        SELECT
+            o.id AS id,
+            o.order_time AS orderTime,
+            u.username AS username,
+            o.address AS address,
+            o.dish_name AS dishName,
+            o.quantity AS quantity,
+            o.total_amount AS totalAmount,
+            o.status AS status
+        FROM orders o
+        LEFT JOIN user u ON u.id = o.user_id
+        ORDER BY o.order_time DESC
+    </select>
+
+    <!-- 经营统计概览：营收、订单数、利润（按时间范围） -->
+    <select id="getStatisticsOverview" resultType="java.util.HashMap">
+        SELECT
+            IFNULL(SUM(total_amount), 0) AS revenue,
+            COUNT(id) AS orderCount,
+            SUM(CASE WHEN total_cost &gt; 0 THEN (total_amount - total_cost) ELSE (total_amount * 0.4) END) AS profit
+        FROM orders
+        WHERE order_time &gt;= #{startTime}
+    </select>
+
+    <!-- 经营统计图表：按日期/时间分组 -->
+    <select id="getStatisticsChart" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(order_time, #{dateFormat}) AS date,
+            SUM(total_amount) AS value
+        FROM orders
+        WHERE order_time &gt;= #{startTime}
+        GROUP BY DATE_FORMAT(order_time, #{dateFormat})
+        ORDER BY date ASC
+    </select>
+
+    <!-- 今日概览统计 -->
+    <select id="getTodayStats" resultType="java.util.HashMap">
+        SELECT
+            IFNULL(SUM(total_amount), 0) AS revenue,
+            COUNT(id) AS orderCount
+        FROM orders
+        WHERE order_time &gt;= #{today}
+    </select>
+
+    <!-- 近7天趋势 -->
+    <select id="getSevenDaysTrend" resultType="java.util.HashMap">
+        SELECT
+            DATE_FORMAT(order_time, '%m-%d') AS date,
+            SUM(total_amount) AS value
+        FROM orders
+        WHERE order_time &gt;= #{sevenDaysAgo}
+        GROUP BY DATE_FORMAT(order_time, '%m-%d')
+        ORDER BY date ASC
+    </select>
+
+    <!-- 最新 N 条订单（管理端仪表盘） -->
+    <select id="selectLatestOrders" resultType="com.example.canteen.entity.Order">
+        SELECT *
+        FROM orders
+        ORDER BY order_time DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>
