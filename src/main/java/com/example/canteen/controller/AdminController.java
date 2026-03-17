@@ -73,7 +73,6 @@ public class AdminController {
         return Result.success();
     }
 
-    /** 兼容旧接口 save（saveOrUpdate） */
     @PostMapping("/dish/save")
     public Result<Void> save(@RequestBody Dish dish) {
         dishService.saveOrUpdate(dish);
