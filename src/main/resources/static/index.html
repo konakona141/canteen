@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -112,20 +112,20 @@
         </div>
     </header>
     <div class="nb">每天全新制作，欢迎订购</div>
-    <div v-show="page===`home`"><div class="wr">
+    <div v-show="page==='home'"><div class="wr">
         <div class="lf">
             <div class="bn"><h2>今日精选餐食</h2><p>现售即热即送 预售提前锁定</p></div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
                 <div class="sg">
-                    <button class="sgb" :class="{on:mTab===`current`}" @click="mTab=`current`">&#127859; 现售</button>
-                    <button class="sgb" :class="{on:mTab===`presale`}" @click="mTab=`presale`">&#128197; 预售</button>
+                    <button class="sgb" :class="{on:mTab==='current'}" @click="mTab='current'">&#127859; 现售</button>
+                    <button class="sgb" :class="{on:mTab==='presale'}" @click="mTab='presale'">&#128197; 预售</button>
                 </div>
                 <span style="font-size:12px;color:var(--m)">共{{ curList.length }}款</span>
             </div>
-            <div class="sec">{{ mTab===`current` ? `现售菜品` : `预售菜品` }}</div>
+            <div class="sec">{{ mTab==='current' ? '现售菜品' : '预售菜品' }}</div>
             <div class="gr" v-if="curList.length">
                 <div class="dc" v-for="d in curList" :key="d.id">
-                    <img :src="d.imageUrl||`img/photo-1546069901-ba9599a7e63c.jpg`" alt="">
+                    <img :src="d.imageUrl||'img/photo-1546069901-ba9599a7e63c.jpg'" alt="">
                     <div class="db">
                         <div class="dn">{{ d.name }}</div>
                         <div class="dd">{{ d.description||d.category }}</div>
@@ -154,8 +154,8 @@
                         <span class="cit">&yen;{{ (item.price*item.qty).toFixed(2) }}</span>
                     </div>
                     <div class="dopt">
-                        <button class="dob" :class="{on:item.deliveryType===`delivery`}" @click="item.deliveryType=`delivery`">&#128665; 配送上门</button>
-                        <button class="dob" :class="{on:item.deliveryType===`pickup`}" @click="item.deliveryType=`pickup`">&#127939; 自取</button>
+                        <button class="dob" :class="{on:item.deliveryType==='delivery'}" @click="item.deliveryType='delivery'">&#128665; 配送上门</button>
+                        <button class="dob" :class="{on:item.deliveryType==='pickup'}" @click="item.deliveryType='pickup'">&#127939; 自取</button>
                     </div>
                     <template v-if="item.presale">
                         <div class="dtlabel">&#128197; 配送/取货时间段（预售必填）</div>
@@ -169,7 +169,7 @@
             </div>
         </div>
     </div></div>
-    <div v-show="page===`mine`" style="padding:20px"><div class="mw">
+    <div v-show="page==='mine'" style="padding:20px"><div class="mw">
         <div class="pc">
             <h3>&#128100; 个人信息</h3>
             <div class="fl"><label>用户名</label><input class="ro" :value="user.username" readonly></div>
@@ -181,12 +181,12 @@
             <div class="octp"><span class="ocid">#{{ o.id }}</span><span class="octm">{{ o.orderTime }}</span></div>
             <div class="ocm"><span class="ocd">{{ o.dishName }} x{{ o.quantity }}</span><span class="oca">&yen;{{ o.totalAmount }}</span></div>
             <div class="ocmeta" v-if="o.deliveryType">
-                {{ o.deliveryType===`delivery` ? `&#128665; 配送上门` : `&#127939; 自取` }}
+                {{ o.deliveryType==='delivery' ? '&#128665; 配送上门' : '&#127939; 自取' }}
                 <span v-if="o.deliveryTime"> &middot; {{ o.deliveryTime }}</span>
             </div>
             <div class="ocf">
                 <span :class="sCls(o.status)" class="stag">{{ sTxt(o.status) }}</span>
-                <button v-if="o.status==`1`" class="bcx" @click="cancelOrd(o)">取消订单</button>
+                <button v-if="o.status=='1'" class="bcx" @click="cancelOrd(o)">取消订单</button>
             </div>
         </div>
         <div class="es" v-if="!orders.length"><p>还没有订单</p></div>
@@ -197,8 +197,8 @@
         </div>
     </div></div>
     <nav class="bnv">
-        <button class="ni" :class="{on:page===`home`}" @click="page=`home`"><span class="ic">&#127968;</span>精选菜品</button>
-        <button class="ni" :class="{on:page===`mine`}" @click="switchMine"><span class="ic">&#128100;</span>个人中心</button>
+        <button class="ni" :class="{on:page==='home'}" @click="page='home'"><span class="ic">&#127968;</span>精选菜品</button>
+        <button class="ni" :class="{on:page==='mine'}" @click="switchMine"><span class="ic">&#128100;</span>个人中心</button>
     </nav>
 </div>
 <script>
@@ -295,8 +295,8 @@ createApp({
             loadOrders();
         };
 
-        const sTxt=s=>({`1`:`制作中`,`2`:`已完成`,`3`:`已取消`})[s]||s;
-        const sCls=s=>({`1`:`stp`,`2`:`std`,`3`:`stc`})[s]||`stc`;
+        const sTxt=s=>({'1':'制作中','2':'已完成','3':'已取消'})[s]||s;
+        const sCls=s=>({'1':'stp','2':'std','3':'stc'})[s]||'stc';
         const goLogin=()=>window.location.href=`login.html`;
         const logout=()=>{localStorage.clear();window.location.href=`login.html`;};
         onMounted(loadMenu);
