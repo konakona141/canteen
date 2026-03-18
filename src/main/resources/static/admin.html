@@ -178,6 +178,7 @@
                         <th>预览</th>
                         <th>菜品名称</th>
                         <th>分类</th>
+                        <th>售卖类型</th>
                         <th>售价/成本</th>
                         <th>库存状态</th>
                         <th>操作</th>
@@ -188,6 +189,8 @@
                         <td><img :src="dish.imageUrl || 'js/default.png'" style="width: 50px; height: 40px; border-radius: 6px; object-fit: cover;"></td>
                         <td style="font-weight: bold;">{{ dish.name }}</td>
                         <td><span class="badge badge-gray">{{ dish.category }}</span></td>
+                        <td><span :class="['badge', dish.saleType===0 ? 'badge-green' : 'badge-gray']">{{ dish.saleType===0 ? '现售' : '预售' }}</span></td>
+                        <td><span :class="['badge', dish.saleType===0 ? 'badge-green' : 'badge-gray']">{{ dish.saleType===0 ? '现售' : '预售' }}</span></td>
                         <td>
                             <span style="color: var(--main-orange); font-weight: bold;">¥{{ dish.price }}</span>
                             <div style="font-size: 11px; color: #94a3b8;">成本: ¥{{ dish.cost }}</div>
@@ -249,6 +252,16 @@
                     <div class="form-group" style="flex: 1;"><label>成本</label><input v-model="newDish.cost" type="number"></div>
                     <div class="form-group" style="flex: 1;"><label>库存</label><input v-model="newDish.stock" type="number"></div>
                 </div>
+                <div class="form-group">
+                    <label>售卖类型</label>
+                    <select v-model.number="newDish.saleType">
+                        <option :value="0">现售（即时出餐）</option>
+                        <option :value="1">预售（提前预订）</option>
+                    </select>
+                </div>
+                    <div class="form-group" style="flex: 1;"><label>成本</label><input v-model="newDish.cost" type="number"></div>
+                    <div class="form-group" style="flex: 1;"><label>库存</label><input v-model="newDish.stock" type="number"></div>
+                </div>
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
                     <button class="btn btn-ghost" @click="showModal = false">取消</button>
                     <button class="btn btn-primary" @click="submitSave">提交保存</button>
@@ -272,7 +285,7 @@
             const showModal = ref(false);
             const lowStockCount = ref(0);
             const stats = ref({ revenue: 0, profit: 0, orderCount: 0 });
-            const newDish = ref({ name: '', category: '荤菜', price: 0, cost: 0, stock: 10, imageUrl: '', status: 1 });
+            const newDish = ref({ name: '', category: '荤菜', price: 0, cost: 0, stock: 10, imageUrl: '', status: 1, saleType: 0 });
 
             // 权限检查
             const checkAuth = () => {
@@ -303,6 +316,8 @@
                 nextTick(() => {
                     const dom = document.getElementById('trendChart');
                     if (!dom) return;
+                    const existing = echarts.getInstanceByDom(dom);
+                    if (existing) existing.dispose();
                     const myChart = echarts.init(dom);
                     myChart.setOption({
                         color: ['#ff6b01'],
@@ -339,7 +354,7 @@
             };
 
             const openAddModal = () => {
-                newDish.value = { name: '', category: '荤菜', price: 0, cost: 0, stock: 10, imageUrl: '', status: 1 };
+                newDish.value = { name: '', category: '荤菜', price: 0, cost: 0, stock: 10, imageUrl: '', status: 1, saleType: 0 };
                 showModal.value = true;
             };
 

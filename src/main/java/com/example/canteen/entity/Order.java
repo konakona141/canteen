@@ -48,10 +48,7 @@ public class Order {
     /** 下单时间 */
     private LocalDateTime orderTime;
 
-    /** 收货地址 */
     private String address;
-    /** 取消时间 */
-    private LocalDateTime cancelTime;
 
 
 }
