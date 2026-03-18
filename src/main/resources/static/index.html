@@ -1,362 +1,308 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>首页</title>
-<script src="js/vue.global.js"></script>
-<script src="js/axios.min.js"></script>
-<style>
-:root{--o:#f97316;--od:#ea6c0a;--bg:#fafaf8;--c:#fff;--t:#1a1a2e;--m:#6b7280;--b:#f0ede8;--g:#10b981;--r:#ef4444;--ra:16px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'PingFang SC',sans-serif;background:var(--bg);color:var(--t);padding-bottom:80px}
-.hd{background:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 var(--b)}
-.hd-logo{font-size:17px;font-weight:900;color:var(--o)}
-.bh{padding:7px 16px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.2s}
-.bli{background:var(--o);color:#fff}.bli:hover{background:var(--od)}
-.blo{background:none;border:1px solid var(--b);color:var(--m)}.blo:hover{background:#fee2e2;color:var(--r)}
-.nb{background:#fff7ed;padding:9px 20px;font-size:12px;color:#92400e;border-bottom:1px solid #fde68a}
-.wr{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 300px;gap:20px;padding:20px}
-.lf{display:flex;flex-direction:column;gap:16px}
-.bn{background:linear-gradient(135deg,#f97316,#fb923c);border-radius:var(--ra);padding:26px 30px;color:#fff;position:relative;overflow:hidden}
-.bn::before{content:'CANTEEN';position:absolute;right:-8px;bottom:-12px;font-size:72px;font-weight:900;opacity:.08}
-.bn h2{font-size:20px;font-weight:900;margin-bottom:4px}
-.bn p{font-size:13px;opacity:.88}
-.sg{display:flex;background:var(--b);border-radius:12px;padding:4px;width:fit-content}
-.sgb{padding:8px 22px;border:none;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;background:none;color:var(--m);transition:.18s}
-.sgb.on{background:#fff;color:var(--o);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.sec{font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.dc{background:var(--c);border-radius:var(--ra);overflow:hidden;transition:.2s;border:1.5px solid transparent}
-.dc:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.07);border-color:#fed7aa}
-.dc img{width:100%;height:155px;object-fit:cover;display:block;background:#f1f5f9}
-.db{padding:13px}
-.dn{font-size:14px;font-weight:700;margin-bottom:3px}
-.dd{font-size:11px;color:var(--m);margin-bottom:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dr{display:flex;justify-content:space-between;align-items:center}
-.pr{font-size:17px;font-weight:900;color:var(--o)}
-.ba{background:var(--o);color:#fff;border:none;border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700;cursor:pointer;transition:.18s}
-.ba:hover{background:var(--od)}
-.ba:disabled{background:#d1d5db;cursor:not-allowed}
-.es{text-align:center;padding:40px 20px;color:var(--m)}
-.cp{background:var(--c);border-radius:var(--ra);padding:18px;position:sticky;top:72px;height:fit-content;border:1px solid var(--b);display:flex;flex-direction:column;min-height:400px}
-.cpt{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.cpb{background:#fee2e2;color:var(--r);font-size:11px;padding:2px 6px;border-radius:20px;font-weight:700}
-.cpe{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--m)}
-.cpe img{width:56px;opacity:.22;margin-bottom:8px}
-.cl{flex:1;overflow-y:auto;margin-bottom:10px}
-.ci{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--b)}
-.ci:last-child{border-bottom:none}
-.cin{flex:1;font-size:13px;font-weight:600}
-.cip{font-size:11px;color:var(--m)}
-.qt{display:flex;align-items:center;gap:5px;background:var(--b);border-radius:20px;padding:3px 7px}
-.qb{border:none;background:none;color:var(--o);font-weight:900;font-size:15px;cursor:pointer;line-height:1}
-.qs{font-size:13px;font-weight:700;min-width:16px;text-align:center}
-.cit{font-size:13px;font-weight:700;min-width:38px;text-align:right}
-.cff{border-top:1px solid var(--b);padding-top:12px}
-.cs{display:flex;justify-content:space-between;font-size:19px;font-weight:900;margin-bottom:10px}
-.cs .am{color:var(--o)}
-.border{width:100%;padding:13px;background:var(--o);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;transition:.2s}
-.border:hover{background:var(--od)}
-.border:disabled{background:#d1d5db;cursor:not-allowed}
-.mw{max-width:680px;margin:0 auto;padding:0 0 20px}
-.pc{background:var(--c);border-radius:var(--ra);padding:22px;border:1px solid var(--b);margin-bottom:16px}
-.pc h3{font-size:15px;font-weight:800;margin-bottom:16px}
-.fl{margin-bottom:12px}
-.fl label{display:block;font-size:11px;font-weight:700;color:var(--m);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
-.fl input{width:100%;padding:9px 11px;border:1.5px solid var(--b);border-radius:9px;font-size:13px;transition:.2s;font-family:inherit}
-.fl input:focus{outline:none;border-color:var(--o)}
-.fl .ro{background:#f8f8f6;color:var(--m)}
-.bsv{background:var(--o);color:#fff;border:none;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:4px}
-.ot{font-size:15px;font-weight:800;margin-bottom:12px}
-.oc{background:var(--c);border-radius:var(--ra);padding:16px 18px;border:1px solid var(--b);margin-bottom:10px}
-.octp{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.ocid{font-size:11px;color:var(--m);font-family:monospace}
-.octm{font-size:11px;color:var(--m)}
-.ocm{display:flex;justify-content:space-between;align-items:center}
-.ocd{font-size:14px;font-weight:700}
-.oca{font-size:15px;font-weight:900;color:var(--o)}
-.ocf{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--b)}
-.stag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
-.stp{background:#fef3c7;color:#92400e}
-.std{background:#dcfce7;color:#15803d}
-.stc{background:#f1f5f9;color:#64748b}
-.bcx{background:#fee2e2;color:var(--r);border:none;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer}
-.bcx:hover{background:#fecaca}
-.pgn{display:flex;justify-content:center;gap:8px;padding:14px 0}
-.pgb{padding:6px 13px;border-radius:7px;border:1.5px solid var(--b);background:var(--c);cursor:pointer;font-size:13px;font-weight:600;color:var(--m);transition:.18s}
-.pgb:hover{border-color:var(--o);color:var(--o)}
-.pgb.on{background:var(--o);color:#fff;border-color:var(--o)}
-.bnv{position:fixed;bottom:0;left:0;right:0;height:64px;background:#fff;display:flex;justify-content:space-around;align-items:center;box-shadow:0 -1px 0 var(--b);z-index:200}
-.ni{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--m);cursor:pointer;transition:.2s;font-size:11px;font-weight:600;padding:0 20px}
-.ni.on{color:var(--o)}
-.ni .ic{font-size:20px}
-@media(max-width:800px){.wr{grid-template-columns:1fr;padding:12px}.cp{display:none}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>邻里食堂</title>
+    <script src="js/vue.global.js"></script>
+    <script src="js/axios.min.js"></script>
+    <style>
+        :root{--o:#f97316;--od:#ea6c0a;--bg:#fafaf8;--c:#fff;--t:#1a1a2e;--m:#6b7280;--b:#f0ede8;--g:#10b981;--r:#ef4444;--ra:16px}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:PingFang SC,sans-serif;background:var(--bg);color:var(--t);padding-bottom:80px}
+        .hd{background:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 var(--b)}
+        .hd-logo{font-size:17px;font-weight:900;color:var(--o)}
+        .bh{padding:7px 16px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:.2s}
+        .bli{background:var(--o);color:#fff}.bli:hover{background:var(--od)}
+        .blo{background:none;border:1px solid var(--b);color:var(--m)}.blo:hover{background:#fee2e2;color:var(--r)}
+        .nb{background:#fff7ed;padding:9px 20px;font-size:12px;color:#92400e;border-bottom:1px solid #fde68a}
+        .wr{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:20px;padding:20px}
+        .lf{display:flex;flex-direction:column;gap:16px}
+        .bn{background:linear-gradient(135deg,#f97316,#fb923c);border-radius:var(--ra);padding:26px 30px;color:#fff;position:relative;overflow:hidden}
+        .bn h2{font-size:20px;font-weight:900;margin-bottom:4px}
+        .bn p{font-size:13px;opacity:.88}
+        .sg{display:flex;background:var(--b);border-radius:12px;padding:4px;width:fit-content}
+        .sgb{padding:8px 22px;border:none;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;background:none;color:var(--m);transition:.18s}
+        .sgb.on{background:#fff;color:var(--o);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+        .sec{font-size:12px;font-weight:700;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+        .gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+        .dc{background:var(--c);border-radius:var(--ra);overflow:hidden;transition:.2s;border:1.5px solid transparent}
+        .dc:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.07);border-color:#fed7aa}
+        .dc img{width:100%;height:155px;object-fit:cover;display:block;background:#f1f5f9}
+        .db{padding:13px}
+        .dn{font-size:14px;font-weight:700;margin-bottom:3px}
+        .dd{font-size:11px;color:var(--m);margin-bottom:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .dr{display:flex;justify-content:space-between;align-items:center}
+        .pr{font-size:17px;font-weight:900;color:var(--o)}
+        .ba{background:var(--o);color:#fff;border:none;border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700;cursor:pointer;transition:.18s}
+        .ba:hover{background:var(--od)}
+        .ba:disabled{background:#d1d5db;cursor:not-allowed}
+        .es{text-align:center;padding:40px 20px;color:var(--m)}
+        .cp{background:var(--c);border-radius:var(--ra);padding:18px;position:sticky;top:72px;height:fit-content;border:1px solid var(--b);display:flex;flex-direction:column;min-height:400px}
+        .cpt{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+        .cpb{background:#fee2e2;color:var(--r);font-size:11px;padding:2px 6px;border-radius:20px;font-weight:700}
+        .cpe{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--m)}
+        .cpe img{width:56px;opacity:.22;margin-bottom:8px}
+        .cl{flex:1;overflow-y:auto;margin-bottom:10px}
+        .ci{padding:10px 0;border-bottom:1px solid var(--b)}
+        .ci:last-child{border-bottom:none}
+        .ci-top{display:flex;align-items:center;gap:8px}
+        .cin{flex:1;font-size:13px;font-weight:600}
+        .cip{font-size:11px;color:var(--m)}
+        .qt{display:flex;align-items:center;gap:5px;background:var(--b);border-radius:20px;padding:3px 7px}
+        .qb{border:none;background:none;color:var(--o);font-weight:900;font-size:15px;cursor:pointer;line-height:1}
+        .qs{font-size:13px;font-weight:700;min-width:16px;text-align:center}
+        .cit{font-size:13px;font-weight:700;min-width:38px;text-align:right}
+        .dopt{display:flex;gap:6px;margin-top:8px}
+        .dob{flex:1;padding:5px 0;border-radius:8px;border:1.5px solid var(--b);background:none;font-size:11px;font-weight:700;color:var(--m);cursor:pointer;transition:.18s;text-align:center}
+        .dob.on{border-color:var(--o);color:var(--o);background:#fff7ed}
+        .dtlabel{font-size:10px;color:var(--m);margin-top:6px;font-weight:600}
+        .dtinput{margin-top:4px;width:100%;padding:6px 9px;border:1.5px solid var(--b);border-radius:8px;font-size:11px;font-family:inherit;color:var(--t);transition:.2s}
+        .dtinput:focus{outline:none;border-color:var(--o)}
+        .cff{border-top:1px solid var(--b);padding-top:12px}
+        .cs{display:flex;justify-content:space-between;font-size:19px;font-weight:900;margin-bottom:10px}
+        .cs .am{color:var(--o)}
+        .btn-order{width:100%;padding:13px;background:var(--o);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;transition:.2s}
+        .btn-order:hover{background:var(--od)}
+        .btn-order:disabled{background:#d1d5db;cursor:not-allowed}
+        .mw{max-width:680px;margin:0 auto;padding:0 0 20px}
+        .pc{background:var(--c);border-radius:var(--ra);padding:22px;border:1px solid var(--b);margin-bottom:16px}
+        .pc h3{font-size:15px;font-weight:800;margin-bottom:16px}
+        .fl{margin-bottom:12px}
+        .fl label{display:block;font-size:11px;font-weight:700;color:var(--m);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+        .fl input{width:100%;padding:9px 11px;border:1.5px solid var(--b);border-radius:9px;font-size:13px;transition:.2s;font-family:inherit}
+        .fl input:focus{outline:none;border-color:var(--o)}
+        .fl .ro{background:#f8f8f6;color:var(--m)}
+        .bsv{background:var(--o);color:#fff;border:none;padding:10px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-top:4px}
+        .ot{font-size:15px;font-weight:800;margin-bottom:12px}
+        .oc{background:var(--c);border-radius:var(--ra);padding:16px 18px;border:1px solid var(--b);margin-bottom:10px}
+        .octp{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+        .ocid{font-size:11px;color:var(--m);font-family:monospace}
+        .octm{font-size:11px;color:var(--m)}
+        .ocm{display:flex;justify-content:space-between;align-items:center}
+        .ocd{font-size:14px;font-weight:700}
+        .oca{font-size:15px;font-weight:900;color:var(--o)}
+        .ocmeta{font-size:11px;color:var(--m);margin-top:5px}
+        .ocf{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--b)}
+        .stag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+        .stp{background:#fef3c7;color:#92400e}
+        .std{background:#dcfce7;color:#15803d}
+        .stc{background:#f1f5f9;color:#64748b}
+        .bcx{background:#fee2e2;color:var(--r);border:none;padding:5px 13px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer}
+        .bcx:hover{background:#fecaca}
+        .pgn{display:flex;justify-content:center;gap:8px;padding:14px 0}
+        .pgb{padding:6px 13px;border-radius:7px;border:1.5px solid var(--b);background:var(--c);cursor:pointer;font-size:13px;font-weight:600;color:var(--m);transition:.18s}
+        .pgb:hover{border-color:var(--o);color:var(--o)}
+        .pgb.on{background:var(--o);color:#fff;border-color:var(--o)}
+        .bnv{position:fixed;bottom:0;left:0;right:0;height:64px;background:#fff;display:flex;justify-content:space-around;align-items:center;box-shadow:0 -1px 0 var(--b);z-index:200}
+        .ni{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--m);cursor:pointer;transition:.2s;font-size:11px;font-weight:600;padding:0 20px}
+        .ni.on{color:var(--o)}
+        .ni .ic{font-size:20px}
+        @media(max-width:800px){.wr{grid-template-columns:1fr;padding:12px}.cp{display:none}}
+    </style>
 </head>
 <body>
 <div id="app">
-<!--HEADER-->
-<header class="hd">
-  <div class="hd-logo">🍱 邻里食堂</div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <span v-if="user.id" style="font-size:13px;color:var(--m)">{{ user.username }}</span>
-    <button v-if="!user.id" class="bh bli" @click="goLogin">&#30331;&#24405;</button>
-    <button v-else class="bh blo" @click="logout">&#36864;&#20986;</button>
-  </div>
-</header>
-<div class="nb">每天全新制作，欢迎订购</div>
-<!--END HEADER-->
-<div v-show="page==='home'">
-  <div class="wr">
-    <div class="lf">
-      <div class="bn"><h2>&#20170;&#26085;&#31934;&#36873;&#32988;&#39135;</h2><p>&#29616;&#21806;&#21363;&#28909;&#21363;&#36865;&#12539;&#39044;&#21806;&#25552;&#21069;&#38145;&#23450;</p></div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div class="sg">
-          <button class="sgb" :class="{on:mTab==='current'}" @click="mTab='current'">&#127859; &#29616;&#21806;</button>
-          <button class="sgb" :class="{on:mTab==='presale'}" @click="mTab='presale'">&#128197; &#39044;&#21806;</button>
+    <header class="hd">
+        <div class="hd-logo">&#127857; 邻里食堂</div>
+        <div style="display:flex;align-items:center;gap:10px">
+            <span v-if="user.id" style="font-size:13px;color:var(--m)">{{ user.username }}</span>
+            <button v-if="!user.id" class="bh bli" @click="goLogin">登录</button>
+            <button v-else class="bh blo" @click="logout">退出</button>
         </div>
-        <span style="font-size:12px;color:var(--m)">&#20849;{{ curList.length }}&#27454;</span>
-      </div>
-      <div class="sec">{{ mTab==='current'?'&#29616;&#21806;&#33756;&#21697;':'&#39044;&#21806;&#33756;&#21697;' }}</div>
-      <div class="gr" v-if="curList.length">
-        <div class="dc" v-for="d in curList" :key="d.id">
-          <img :src="d.imageUrl||'img/photo-1546069901-ba9599a7e63c.jpg'" alt="">
-          <div class="db">
-            <div class="dn">{{ d.name }}</div>
-            <div class="dd">{{ d.description||d.category }}</div>
-            <div class="dr">
-              <span class="pr">&yen;{{ d.price }}</span>
-              <span style="font-size:11px;color:var(--m)">&#20313;{{ d.stock }}</span>
-              <button class="ba" :disabled="d.stock<=0" @click="addCart(d)">+ &#21152;&#20837;</button>
+    </header>
+    <div class="nb">每天全新制作，欢迎订购</div>
+    <div v-show="page===`home`"><div class="wr">
+        <div class="lf">
+            <div class="bn"><h2>今日精选餐食</h2><p>现售即热即送 预售提前锁定</p></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <div class="sg">
+                    <button class="sgb" :class="{on:mTab===`current`}" @click="mTab=`current`">&#127859; 现售</button>
+                    <button class="sgb" :class="{on:mTab===`presale`}" @click="mTab=`presale`">&#128197; 预售</button>
+                </div>
+                <span style="font-size:12px;color:var(--m)">共{{ curList.length }}款</span>
             </div>
-          </div>
+            <div class="sec">{{ mTab===`current` ? `现售菜品` : `预售菜品` }}</div>
+            <div class="gr" v-if="curList.length">
+                <div class="dc" v-for="d in curList" :key="d.id">
+                    <img :src="d.imageUrl||`img/photo-1546069901-ba9599a7e63c.jpg`" alt="">
+                    <div class="db">
+                        <div class="dn">{{ d.name }}</div>
+                        <div class="dd">{{ d.description||d.category }}</div>
+                        <div class="dr">
+                            <span class="pr">&yen;{{ d.price }}</span>
+                            <span style="font-size:11px;color:var(--m)">余{{ d.stock }}</span>
+                            <button class="ba" :disabled="d.stock<=0" @click="addCart(d)">+ 加入</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="es" v-else><div style="font-size:36px">&#127869;</div><p>暂无菜品</p></div>
         </div>
-      </div>
-      <div class="es" v-else><div style="font-size:36px">&#127869;</div><p>&#26242;&#26080;&#33756;&#21697;</p></div>
-    </div>
-    <div class="cp">
-      <div class="cpt">&#128722; &#30830;&#35748;&#35746;&#21333;<span v-if="totalQty>0" class="cpb">{{ totalQty }}&#20221;</span></div>
-      <div v-if="!cart.length" class="cpe"><img src="img/11329060.png"><p>&#35746;&#21333;&#26159;&#31354;&#30340;</p></div>
-      <div v-else class="cl">
-        <div v-for="item in cart" :key="item.dishId" class="ci">
-          <div style="flex:1"><div class="cin">{{ item.name }}</div><div class="cip">&yen;{{ item.price }}/&#20221;</div></div>
-          <div class="qt">
-            <button class="qb" @click="chgQty(item,-1)">&minus;</button>
-            <span class="qs">{{ item.qty }}</span>
-            <button class="qb" @click="chgQty(item,1)">+</button>
-          </div>
-          <span class="cit">&yen;{{ (item.price*item.qty).toFixed(2) }}</span>
+        <div class="cp">
+            <div class="cpt">&#128722; 确认订单<span v-if="totalQty>0" class="cpb">{{ totalQty }}份</span></div>
+            <div v-if="!cart.length" class="cpe"><img src="img/11329060.png"><p>订单是空的</p></div>
+            <div v-else class="cl">
+                <div v-for="item in cart" :key="item.dishId" class="ci">
+                    <div class="ci-top">
+                        <div style="flex:1"><div class="cin">{{ item.name }}</div><div class="cip">&yen;{{ item.price }}/份</div></div>
+                        <div class="qt">
+                            <button class="qb" @click="chgQty(item,-1)">&minus;</button>
+                            <span class="qs">{{ item.qty }}</span>
+                            <button class="qb" @click="chgQty(item,1)">+</button>
+                        </div>
+                        <span class="cit">&yen;{{ (item.price*item.qty).toFixed(2) }}</span>
+                    </div>
+                    <div class="dopt">
+                        <button class="dob" :class="{on:item.deliveryType===`delivery`}" @click="item.deliveryType=`delivery`">&#128665; 配送上门</button>
+                        <button class="dob" :class="{on:item.deliveryType===`pickup`}" @click="item.deliveryType=`pickup`">&#127939; 自取</button>
+                    </div>
+                    <template v-if="item.presale">
+                        <div class="dtlabel">&#128197; 配送/取货时间段（预售必填）</div>
+                        <input class="dtinput" v-model="item.deliveryTime" placeholder="如：2026-03-20 11:00-12:00">
+                    </template>
+                </div>
+            </div>
+            <div class="cff">
+                <div class="cs"><span>合计</span><span class="am">&yen;{{ totalAmt }}</span></div>
+                <button class="btn-order" :disabled="!cart.length" @click="placeOrder">立即下单</button>
+            </div>
         </div>
-      </div>
-      <div class="cff">
-        <div class="cs"><span>&#21512;&#35745;</span><span class="am">&yen;{{ totalAmt }}</span></div>
-        <button class="border" :disabled="!cart.length" @click="placeOrder">&#31435;&#21363;&#19979;&#21333;</button>
-      </div>
-    </div>
-  </div>
+    </div></div>
+    <div v-show="page===`mine`" style="padding:20px"><div class="mw">
+        <div class="pc">
+            <h3>&#128100; 个人信息</h3>
+            <div class="fl"><label>用户名</label><input class="ro" :value="user.username" readonly></div>
+            <div class="fl"><label>配送地址</label><input v-model="user.address" placeholder="请填写配送地址"></div>
+            <button class="bsv" @click="saveAddr">保存信息</button>
+        </div>
+        <div class="ot">&#128203; 我的订单</div>
+        <div v-for="o in pageOrders" :key="o.id" class="oc">
+            <div class="octp"><span class="ocid">#{{ o.id }}</span><span class="octm">{{ o.orderTime }}</span></div>
+            <div class="ocm"><span class="ocd">{{ o.dishName }} x{{ o.quantity }}</span><span class="oca">&yen;{{ o.totalAmount }}</span></div>
+            <div class="ocmeta" v-if="o.deliveryType">
+                {{ o.deliveryType===`delivery` ? `&#128665; 配送上门` : `&#127939; 自取` }}
+                <span v-if="o.deliveryTime"> &middot; {{ o.deliveryTime }}</span>
+            </div>
+            <div class="ocf">
+                <span :class="sCls(o.status)" class="stag">{{ sTxt(o.status) }}</span>
+                <button v-if="o.status==`1`" class="bcx" @click="cancelOrd(o)">取消订单</button>
+            </div>
+        </div>
+        <div class="es" v-if="!orders.length"><p>还没有订单</p></div>
+        <div class="pgn" v-if="totalPages>1">
+            <button class="pgb" @click="curP--" :disabled="curP===1">上一页</button>
+            <button v-for="pg in totalPages" :key="pg" class="pgb" :class="{on:curP===pg}" @click="curP=pg">{{ pg }}</button>
+            <button class="pgb" @click="curP++" :disabled="curP===totalPages">下一页</button>
+        </div>
+    </div></div>
+    <nav class="bnv">
+        <button class="ni" :class="{on:page===`home`}" @click="page=`home`"><span class="ic">&#127968;</span>精选菜品</button>
+        <button class="ni" :class="{on:page===`mine`}" @click="switchMine"><span class="ic">&#128100;</span>个人中心</button>
+    </nav>
 </div>
-<div v-show="page==='mine'" style="padding:20px">
-  <div class="mw">
-    <div class="pc">
-      <h3>&#128100; &#20491;&#20154;&#20449;&#24687;</h3>
-      <div class="fl"><label>&#29992;&#25143;&#21517;</label><input class="ro" :value="user.username" readonly></div>
-      <div class="fl"><label>&#37197;&#36865;&#22320;&#22336;</label><input v-model="user.address"></div>
-      <button class="bsv" @click="saveAddr">&#20445;&#23384;&#20449;&#24687;</button>
-    </div>
-    <div class="ot">&#128203; &#25105;&#30340;&#35746;&#21333;</div>
-    <div v-for="o in pageOrders" :key="o.id" class="oc">
-      <div class="octp"><span class="ocid">#{{ o.id }}</span><span class="octm">{{ o.orderTime }}</span></div>
-      <div class="ocm"><span class="ocd">{{ o.dishName }} &times; {{ o.quantity }}</span><span class="oca">&yen;{{ o.totalAmount }}</span></div>
-      <div class="ocf">
-        <span :class="sCls(o.status)" class="stag">{{ sTxt(o.status) }}</span>
-        <button v-if="o.status=='1'" class="bcx" @click="cancelOrd(o)">&#21462;&#28040;&#35746;&#21333;</button>
-      </div>
-    </div>
-    <div class="es" v-if="!orders.length"><p>&#36824;&#27809;&#35746;&#21333;</p></div>
-    <div class="pgn" v-if="totalPages>1">
-      <button class="pgb" @click="curP--" :disabled="curP===1">&#19978;&#19968;&#39029;</button>
-      <button v-for="p in totalPages" :key="p" class="pgb" :class="{on:curP===p}" @click="curP=p">{{ p }}</button>
-      <button class="pgb" @click="curP++" :disabled="curP===totalPages">&#19979;&#19968;&#39029;</button>
-    </div>
-  </div>
-</div>
-<nav class="bnv">
-  <button class="ni" :class="{on:page==='home'}" @click="page='home'"><span class="ic">&#127968;</span>&#31934;&#36873;&#33756;&#21697;</button>
-  <button class="ni" :class="{on:page==='mine'}" @click="switchMine"><span class="ic">&#128100;</span>&#20491;&#20154;&#20013;&#24515;</button>
-</nav>
-</div>
-
 <script>
 const {createApp,ref,computed,onMounted}=Vue;
 createApp({
-  setup(){
-    const user=ref(JSON.parse(localStorage.getItem('user')||'{}'));
-    const page=ref('home'),mTab=ref('current');
-    const menu=ref({presale:[],current:[]}),cart=ref([]),orders=ref([]),curP=ref(1),perP=5;
-    const curList=computed(()=>menu.value[mTab.value]||[]);
-    const totalQty=computed(()=>cart.value.reduce((s,i)=>s+i.qty,0));
-    const totalAmt=computed(()=>cart.value.reduce((s,i)=>s+(i.price*i.qty),0).toFixed(2));
-    const totalPages=computed(()=>Math.ceil(orders.value.length/perP)||1);
-    const pageOrders=computed(()=>{const s=(curP.value-1)*perP;return orders.value.slice(s,s+perP);});
-    const loadMenu=async()=>{
-      try{const r=await axios.get('/api/canteen/menu');if(r.data.success)menu.value=r.data.data;}
-      catch(e){}
-    };
-    const addCart=d=>{
-      if(d.stock<=0)return;
-      const ex=cart.value.find(i=>i.dishId===d.id);
-      if(ex){if(ex.qty<d.stock)ex.qty++;}
-      else cart.value.push({dishId:d.id,name:d.name,price:parseFloat(d.price),qty:1,stock:d.stock});
-    };
-    const chgQty=(item,delta)=>{
-      item.qty+=delta;
-      if(item.qty<=0)cart.value=cart.value.filter(i=>i.dishId!==item.dishId);
-      else if(item.qty>item.stock)item.qty=item.stock;
-    };
-    const placeOrder=async()=>{
-      if(!user.value.id){window.location.href='login.html';return;}
-      if(!user.value.address){alert('Please set address first');page.value='mine';return;}
-      if(!cart.value.length)return;
-      try{
-        const item=cart.value[0];
-        const r=await axios.post('/api/canteen/order',{userId:user.value.id,dishId:item.dishId,quantity:item.qty});
-        if(r.data.success){cart.value=[];loadMenu();}else alert(r.data.message||'failed');
-      }catch(e){}
-    };
-    const loadOrders=async()=>{
-      if(!user.value.id)return;
-      try{const r=await axios.get('/api/canteen/my-orders?userId='+user.value.id);if(r.data.success)orders.value=r.data.data;}
-      catch(e){}
-    };
-    const cancelOrd=async o=>{
-      if(!confirm('Cancel this order?'))return;
-      try{
-        const r=await axios.post('/api/canteen/order/cancel?orderId='+o.id+'&userId='+user.value.id);
-        if(r.data.success)loadOrders();else alert(r.data.message||'failed');
-      }catch(e){}
-    };
-    const saveAddr=async()=>{
-      if(!user.value.id)return;
-      try{
-        const r=await axios.post('/api/canteen/user/update',user.value);
-        if(r.data.success){if(r.data.data)user.value={...user.value,...r.data.data};localStorage.setItem('user',JSON.stringify(user.value));}
-        else alert(r.data.message||'failed');
-      }catch(e){}
-    };
-    const switchMine=()=>{
-      if(!user.value.id){window.location.href='login.html';return;}
-      page.value='mine';loadOrders();curP.value=1;
-    };
-    const sTxt=s=>({'1':'制作中','2':'已完成','3':'已取消'})[s]||s;
-    const sCls=s=>({'1':'stp','2':'std','3':'stc'})[s]||'stc';
-    const goLogin=()=>window.location.href='login.html';
-    const logout=()=>{localStorage.clear();window.location.href='login.html';};
-    onMounted(loadMenu);
-    return{user,page,mTab,menu,curList,cart,totalQty,totalAmt,orders,pageOrders,curP,totalPages,
-      addCart,chgQty,placeOrder,cancelOrd,saveAddr,switchMine,sTxt,sCls,goLogin,logout};
-  }
-}).mount('#app');
-</script>
-</body></html>
+    setup(){
+        const user=ref(JSON.parse(localStorage.getItem(`user`)||`{}`));
+        const page=ref(`home`),mTab=ref(`current`);
+        const menu=ref({presale:[],current:[]}),cart=ref([]),orders=ref([]),curP=ref(1),perP=5;
+        const curList=computed(()=>menu.value[mTab.value]||[]);
+        const totalQty=computed(()=>cart.value.reduce((s,i)=>s+i.qty,0));
+        const totalAmt=computed(()=>cart.value.reduce((s,i)=>s+(i.price*i.qty),0).toFixed(2));
+        const totalPages=computed(()=>Math.ceil(orders.value.length/perP)||1);
+        const pageOrders=computed(()=>{const s=(curP.value-1)*perP;return orders.value.slice(s,s+perP);});
 
-<script>
-const {createApp,ref,computed,onMounted}=Vue;
-createApp({
-  setup(){
-    const user=ref(JSON.parse(localStorage.getItem('user')||'{}'));
-    const page=ref('home'),mTab=ref('current');
-    const menu=ref({presale:[],current:[]}),cart=ref([]),orders=ref([]),curP=ref(1),perP=5;
-    const curList=computed(()=>menu.value[mTab.value]||[]);
-    const totalQty=computed(()=>cart.value.reduce((s,i)=>s+i.qty,0));
-    const totalAmt=computed(()=>cart.value.reduce((s,i)=>s+(i.price*i.qty),0).toFixed(2));
-    const totalPages=computed(()=>Math.ceil(orders.value.length/perP)||1);
-    const pageOrders=computed(()=>{const s=(curP.value-1)*perP;return orders.value.slice(s,s+perP);});
-    const loadMenu=async()=>{
-      try{const r=await axios.get('/api/canteen/menu');if(r.data.success)menu.value=r.data.data;}
-      catch(e){}
-    };
-    const addCart=d=>{
-      if(d.stock<=0)return;
-      const ex=cart.value.find(i=>i.dishId===d.id);
-      if(ex){if(ex.qty<d.stock)ex.qty++;}
-      else cart.value.push({dishId:d.id,name:d.name,price:parseFloat(d.price),qty:1,stock:d.stock});
-    };
-    const chgQty=(item,delta)=>{
-      item.qty+=delta;
-      if(item.qty<=0)cart.value=cart.value.filter(i=>i.dishId!==item.dishId);
-      else if(item.qty>item.stock)item.qty=item.stock;
-    };
-    const placeOrder=async()=>{
-      if(!user.value.id){window.location.href='login.html';return;}
-      if(!user.value.address){alert('Please set address first');page.value='mine';return;}
-      if(!cart.value.length)return;
-      try{
-        const item=cart.value[0];
-        const r=await axios.post('/api/canteen/order',{userId:user.value.id,dishId:item.dishId,quantity:item.qty});
-        if(r.data.success){cart.value=[];loadMenu();}else alert(r.data.message||'failed');
-      }catch(e){}
-    };
-    const loadOrders=async()=>{
-      if(!user.value.id)return;
-      try{const r=await axios.get('/api/canteen/my-orders?userId='+user.value.id);if(r.data.success)orders.value=r.data.data;}
-      catch(e){}
-    };
-    const cancelOrd=async o=>{
-      if(!confirm('Cancel this order?'))return;
-      try{
-        const r=await axios.post('/api/canteen/order/cancel?orderId='+o.id+'&userId='+user.value.id);
-        if(r.data.success)loadOrders();else alert(r.data.message||'failed');
-      }catch(e){}
-    };
-    const saveAddr=async()=>{
-      if(!user.value.id)return;
-      try{
-        const r=await axios.post('/api/canteen/user/update',user.value);
-        if(r.data.success){if(r.data.data)user.value={...user.value,...r.data.data};localStorage.setItem('user',JSON.stringify(user.value));}
-        else alert(r.data.message||'failed');
-      }catch(e){}
-    };
-    const switchMine=()=>{
-      if(!user.value.id){window.location.href='login.html';return;}
-      page.value='mine';loadOrders();curP.value=1;
-    };
-    const sTxt=s=>({'1':'制作中','2':'已完成','3':'已取消'})[s]||s;
-    const sCls=s=>({'1':'stp','2':'std','3':'stc'})[s]||'stc';
-    const goLogin=()=>window.location.href='login.html';
-    const logout=()=>{localStorage.clear();window.location.href='login.html';};
-    onMounted(loadMenu);
-    return{user,page,mTab,menu,curList,cart,totalQty,totalAmt,orders,pageOrders,curP,totalPages,
-      addCart,chgQty,placeOrder,cancelOrd,saveAddr,switchMine,sTxt,sCls,goLogin,logout};
-  }
-}).mount('#app');
-</script>
-</body></html>
+        const loadMenu=async()=>{
+            try{const r=await axios.get(`/api/canteen/menu`);if(r.data.success)menu.value=r.data.data;}
+            catch(e){}
+        };
 
-<script>
-const {createApp,ref,computed,onMounted}=Vue;
-createApp({setup(){
-const user=ref(JSON.parse(localStorage.getItem('user')||'{}'));
-const page=ref('home'),mTab=ref('current'),menu=ref({presale:[],current:[]}),cart=ref([]),orders=ref([]),curP=ref(1),perP=5;
-const curList=computed(()=>menu.value[mTab.value]||[]);
-const totalQty=computed(()=>cart.value.reduce((s,i)=>s+i.qty,0));
-const totalAmt=computed(()=>cart.value.reduce((s,i)=>s+(i.price*i.qty),0).toFixed(2));
-const totalPages=computed(()=>Math.ceil(orders.value.length/perP)||1);
-const pageOrders=computed(()=>{const s=(curP.value-1)*perP;return orders.value.slice(s,s+perP);});
-const loadMenu=async()=>{try{const r=await axios.get('/api/canteen/menu');if(r.data.success)menu.value=r.data.data;}catch(e){}};
-const addCart=d=>{if(d.stock<=0)return;const ex=cart.value.find(i=>i.dishId===d.id);if(ex){if(ex.qty<d.stock)ex.qty++;}else cart.value.push({dishId:d.id,name:d.name,price:parseFloat(d.price),qty:1,stock:d.stock});};
-const chgQty=(item,delta)=>{item.qty+=delta;if(item.qty<=0)cart.value=cart.value.filter(i=>i.dishId!==item.dishId);else if(item.qty>item.stock)item.qty=item.stock;};
-const placeOrder=async()=>{if(!user.value.id){window.location.href='login.html';return;}if(!user.value.address){page.value='mine';return;}if(!cart.value.length)return;try{const item=cart.value[0];const r=await axios.post('/api/canteen/order',{userId:user.value.id,dishId:item.dishId,quantity:item.qty});if(r.data.success){cart.value=[];loadMenu();}else alert(r.data.message);}catch(e){}};
-const loadOrders=async()=>{if(!user.value.id)return;try{const r=await axios.get('/api/canteen/my-orders?userId='+user.value.id);if(r.data.success)orders.value=r.data.data;}catch(e){}};
-const cancelOrd=async o=>{if(!confirm('cancel?'))return;try{const r=await axios.post('/api/canteen/order/cancel?orderId='+o.id+'&userId='+user.value.id);if(r.data.success)loadOrders();else alert(r.data.message);}catch(e){}};
-const saveAddr=async()=>{if(!user.value.id)return;try{const r=await axios.post('/api/canteen/user/update',user.value);if(r.data.success){if(r.data.data)user.value={...user.value,...r.data.data};localStorage.setItem('user',JSON.stringify(user.value));}else alert(r.data.message);}catch(e){}};
-const switchMine=()=>{if(!user.value.id){window.location.href='login.html';return;}page.value='mine';loadOrders();curP.value=1;};
-const sTxt=s=>({'1':'制作中','2':'已完成','3':'已取消'})[s]||s;
-const sCls=s=>({'1':'stp','2':'std','3':'stc'})[s]||'stc';
-const goLogin=()=>window.location.href='login.html';
-const logout=()=>{localStorage.clear();window.location.href='login.html';};
-onMounted(loadMenu);
-return{user,page,mTab,menu,curList,cart,totalQty,totalAmt,orders,pageOrders,curP,totalPages,addCart,chgQty,placeOrder,cancelOrd,saveAddr,switchMine,sTxt,sCls,goLogin,logout};
-}}).mount('#app');
+        const addCart=d=>{
+            if(d.stock<=0)return;
+            const ex=cart.value.find(i=>i.dishId===d.id);
+            if(ex){if(ex.qty<d.stock)ex.qty++;}
+            else cart.value.push({dishId:d.id,name:d.name,price:parseFloat(d.price),qty:1,stock:d.stock,presale:d.saleType===1,deliveryType:`delivery`,deliveryTime:``});
+        };
+
+        const chgQty=(item,delta)=>{
+            item.qty+=delta;
+            if(item.qty<=0)cart.value=cart.value.filter(i=>i.dishId!==item.dishId);
+            else if(item.qty>item.stock)item.qty=item.stock;
+        };
+
+        const placeOrder=async()=>{
+            if(!user.value.id){window.location.href=`login.html`;return;}
+            if(!user.value.address){alert(`请先填写配送地址`);page.value=`mine`;return;}
+            if(!cart.value.length)return;
+            for(const item of cart.value){
+                if(!item.deliveryType){alert(`请为 ${item.name} 选择配送方式`);return;}
+                if(item.presale&&!item.deliveryTime.trim()){alert(`预售商品 ${item.name} 请填写配送/取货时间段`);return;}
+            }
+            let allOk=true;
+            for(const item of cart.value){
+                try{
+                    const r=await axios.post(`/api/canteen/order`,{
+                        userId:user.value.id,
+                        dishId:item.dishId,
+                        quantity:item.qty,
+                        deliveryType:item.deliveryType,
+                        deliveryTime:item.deliveryTime||null
+                    });
+                    if(!r.data.success){alert(r.data.message||`下单失败`);allOk=false;break;}
+                }catch(e){allOk=false;break;}
+            }
+            if(allOk){cart.value=[];loadMenu();alert(`下单成功！`);}
+        };
+
+        const loadOrders=async()=>{
+            if(!user.value.id)return;
+            try{const r=await axios.get(`/api/canteen/my-orders?userId=`+user.value.id);if(r.data.success)orders.value=r.data.data;}
+            catch(e){}
+        };
+
+        const cancelOrd=async o=>{
+            if(!confirm(`确认取消该订单？`))return;
+            try{
+                const r=await axios.post(`/api/canteen/order/cancel?orderId=`+o.id+`&userId=`+user.value.id);
+                if(r.data.success)loadOrders();else alert(r.data.message||`取消失败`);
+            }catch(e){}
+        };
+
+        const saveAddr=async()=>{
+            if(!user.value.id)return;
+            try{
+                const r=await axios.post(`/api/canteen/user/update`,user.value);
+                if(r.data.success){
+                    if(r.data.data)user.value={...user.value,...r.data.data};
+                    localStorage.setItem(`user`,JSON.stringify(user.value));
+                    alert(`保存成功`);
+                }else alert(r.data.message||`保存失败`);
+            }catch(e){}
+        };
+
+        const switchMine=async()=>{
+            if(!user.value.id){window.location.href=`login.html`;return;}
+            page.value=`mine`;curP.value=1;
+            try{
+                const r=await axios.get(`/api/canteen/user/profile?userId=`+user.value.id);
+                if(r.data.success&&r.data.data){
+                    user.value={...user.value,...r.data.data};
+                    localStorage.setItem(`user`,JSON.stringify(user.value));
+                }
+            }catch(e){}
+            loadOrders();
+        };
+
+        const sTxt=s=>({`1`:`制作中`,`2`:`已完成`,`3`:`已取消`})[s]||s;
+        const sCls=s=>({`1`:`stp`,`2`:`std`,`3`:`stc`})[s]||`stc`;
+        const goLogin=()=>window.location.href=`login.html`;
+        const logout=()=>{localStorage.clear();window.location.href=`login.html`;};
+        onMounted(loadMenu);
+        return{user,page,mTab,menu,curList,cart,totalQty,totalAmt,orders,pageOrders,curP,totalPages,
+            addCart,chgQty,placeOrder,cancelOrd,saveAddr,switchMine,sTxt,sCls,goLogin,logout};
+    }
+}).mount(`#app`);
 </script>
 </body></html>
