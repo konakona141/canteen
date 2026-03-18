@@ -80,13 +80,26 @@ public class OrderController {
     }
 
     /**
-     * 用户：更新个人配送地址
+     * 用户：获取个人信息（用于地址回显）
+     */
+    @GetMapping("/user/profile")
+    public Result<User> getUserProfile(@RequestParam Long userId) {
+        User user = userService.getById(userId);
+        if (user == null) return Result.error("用户不存在");
+        user.setPassword(null);
+        return Result.success(user);
+    }
+
+    /**
+     * 用户：更新个人配送地址，返回最新用户信息
      */
     @PostMapping("/user/update")
-    public Result<Void> updateAddress(@RequestBody User user) {
+    public Result<User> updateAddress(@RequestBody User user) {
         userService.update().set("address", user.getAddress())
                 .eq("id", user.getId()).update();
-        return Result.success();
+        User updated = userService.getById(user.getId());
+        if (updated != null) updated.setPassword(null);
+        return Result.success(updated);
     }
 
     // --- 管理员操作 ---

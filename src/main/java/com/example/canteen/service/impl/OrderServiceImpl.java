@@ -32,21 +32,33 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private UserService userService;
 
     /**
-     * 实现下单逻辑：保持你之前的乐观锁扣减
+     * ??????????????????
      */
     @Override
-    @Transactional(rollbackFor = Exception.class) // 涉及库存和订单，必须加事务
+    @Transactional(rollbackFor = Exception.class) // ?????????????
     public boolean placeOrder(OrderRequest request) {
-        // 1. 获取用户信息和菜品信息
+        // 1. ???????????
         User user = userService.getById(request.getUserId());
         Dish dish = dishService.getById(request.getDishId());
 
-        // 校验：菜品是否存在以及库存是否充足
+        // ?????????????????
         if (dish == null || dish.getStock() < request.getQuantity()) {
-            throw new BusinessException("库存不足或菜品不存在");
+            throw new BusinessException("??????????");
         }
 
-        // 2. 核心：扣减库存（使用乐观锁思想 ge stock）
+        // ???????????
+        if (request.getDeliveryType() == null || request.getDeliveryType().isBlank()) {
+            throw new BusinessException("????????????????");
+        }
+
+        // ?????????????/?????
+        if (Integer.valueOf(1).equals(dish.getSaleType())) {
+            if (request.getDeliveryTime() == null || request.getDeliveryTime().isBlank()) {
+                throw new BusinessException("???????????????");
+            }
+        }
+
+        // 2. ??????????????? ge stock?
         boolean ok = dishService.update()
                 .setSql("stock = stock - " + request.getQuantity())
                 .eq("id", dish.getId())
@@ -55,57 +67,61 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         if (!ok) return false;
 
-        // 3. 创建唯一的订单对象，整合所有数据
+        // 3. ????????????????
         Order order = new Order();
 
-        // 绑定用户信息
+        // ??????
         order.setUserId(request.getUserId());
-        order.setAddress(user.getAddress()); // 关键：快照保存下单地址
+        order.setAddress(user.getAddress()); // ???????????
 
-        // 绑定菜品信息快照（冗余字段防止菜品删改后找不到数据）
+        // ??????????????????????????
         order.setDishId(request.getDishId());
         order.setDishName(dish.getName());
         order.setQuantity(request.getQuantity());
 
-        // 计算金额与成本
+        // ???????
         BigDecimal amount = dish.getPrice().multiply(new BigDecimal(request.getQuantity()));
         BigDecimal costPrice = (dish.getCost() != null) ? dish.getCost() : dish.getPrice().multiply(new BigDecimal("0.6"));
         BigDecimal totalCost = costPrice.multiply(new BigDecimal(request.getQuantity()));
 
         order.setTotalAmount(amount);
-        order.setTotalCost(totalCost); // 锁定当前成本，用于后续利润统计
+        order.setTotalCost(totalCost); // ???????????????
 
-        // 设置订单状态与时间
-        order.setStatus("1"); // 统一使用字符串 "1" 表示待出餐
+        // ????????
+        order.setDeliveryType(request.getDeliveryType());
+        order.setDeliveryTime(request.getDeliveryTime());
+
+        // ?????????
+        order.setStatus("1"); // ??????? "1" ?????
         order.setOrderTime(LocalDateTime.now());
 
-        // 4. 保存订单
+        // 4. ????
         return this.save(order);
     }
 
     /**
-     * 计算图表的核心数据：总营收、总单数、总利润
+     * ?????????????????????
      */
     @Override
     public Map<String, Object> getStatistics(String range) {
         Map<String, Object> result = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startTime;
-        String dateFormat; // 用于图表分组的格式
+        String dateFormat; // ?????????
 
-        // 1. 根据 range 确定统计范围和图表精度
+        // 1. ?? range ???????????
         switch (range) {
             case "week":
                 startTime = now.minusDays(7);
-                dateFormat = "%m-%d"; // 按天展示
+                dateFormat = "%m-%d"; // ????
                 break;
             case "month":
                 startTime = now.minusMonths(1);
-                dateFormat = "%m-%d"; // 按天展示
+                dateFormat = "%m-%d"; // ????
                 break;
             case "year":
                 startTime = now.minusYears(1);
-                dateFormat = "%Y-%m"; // 按月展示
+                dateFormat = "%Y-%m"; // ????
                 break;
             default: // day
                 startTime = now.with(LocalTime.MIN);
@@ -113,10 +129,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 break;
         }
 
-        // 2. 计算总营收、成交单数、利润（SQL 在 OrderMapper.xml）
+        // 2. ??????????????SQL ? OrderMapper.xml?
         Map<String, Object> overview = this.baseMapper.getStatisticsOverview(startTime);
 
-        // 3. 获取趋势图数据（SQL 在 OrderMapper.xml）
+        // 3. ????????SQL ? OrderMapper.xml?
         List<Map<String, Object>> chart = this.baseMapper.getStatisticsChart(startTime, dateFormat);
 
         result.put("overview", overview);
@@ -129,9 +145,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         String today = LocalDate.now().toString();
         Map<String, Object> stats = this.baseMapper.getTodayStats(today);
 
-        // 计算利润 (简单逻辑：营收 * 0.4，复杂逻辑需减去 dish 的 cost)
+        // ???? (??????? * 0.4???????? dish ? cost)
         BigDecimal revenue = new BigDecimal(stats.get("revenue").toString());
-        BigDecimal profit = revenue.multiply(new BigDecimal("0.4")); // 假设毛利40%
+        BigDecimal profit = revenue.multiply(new BigDecimal("0.4")); // ????40%
 
         Map<String, Object> overview = new HashMap<>();
         overview.put("revenue", revenue);
@@ -142,8 +158,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     /**
-     * 2. 实现 getSevenDaysTrend (近7天趋势)
-     * 逻辑：按日期分组统计过去7天的营业额
+     * ?? getSevenDaysTrend (?7???)
+     * ????????????7?????
      */
     @Override
     public List<Map<String, Object>> getSevenDaysTrend() {
