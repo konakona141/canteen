@@ -32,10 +32,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private UserService userService;
 
     /**
-     * ??????????????????
+     * ??????????????
      */
     @Override
-    @Transactional(rollbackFor = Exception.class) // ?????????????
+    @Transactional(rollbackFor = Exception.class)
     public boolean placeOrder(OrderRequest request) {
         // 1. ???????????
         User user = userService.getById(request.getUserId());
@@ -67,14 +67,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         if (!ok) return false;
 
-        // 3. ????????????????
+        // 3. ?????????????
         Order order = new Order();
 
         // ??????
         order.setUserId(request.getUserId());
-        order.setAddress(user.getAddress()); // ???????????
+        order.setAddress(user.getAddress()); // ????????
 
-        // ??????????????????????????
+        // ????????
         order.setDishId(request.getDishId());
         order.setDishName(dish.getName());
         order.setQuantity(request.getQuantity());
@@ -85,14 +85,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         BigDecimal totalCost = costPrice.multiply(new BigDecimal(request.getQuantity()));
 
         order.setTotalAmount(amount);
-        order.setTotalCost(totalCost); // ???????????????
+        order.setTotalCost(totalCost);
 
         // ????????
         order.setDeliveryType(request.getDeliveryType());
         order.setDeliveryTime(request.getDeliveryTime());
 
         // ?????????
-        order.setStatus("1"); // ??????? "1" ?????
+        order.setStatus("1"); // "1" ?????
         order.setOrderTime(LocalDateTime.now());
 
         // 4. ????
@@ -100,28 +100,27 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     /**
-     * ?????????????????????
+     * ????????????????????
      */
     @Override
     public Map<String, Object> getStatistics(String range) {
         Map<String, Object> result = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startTime;
-        String dateFormat; // ?????????
+        String dateFormat;
 
-        // 1. ?? range ???????????
         switch (range) {
             case "week":
                 startTime = now.minusDays(7);
-                dateFormat = "%m-%d"; // ????
+                dateFormat = "%m-%d";
                 break;
             case "month":
                 startTime = now.minusMonths(1);
-                dateFormat = "%m-%d"; // ????
+                dateFormat = "%m-%d";
                 break;
             case "year":
                 startTime = now.minusYears(1);
-                dateFormat = "%Y-%m"; // ????
+                dateFormat = "%Y-%m";
                 break;
             default: // day
                 startTime = now.with(LocalTime.MIN);
@@ -129,10 +128,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 break;
         }
 
-        // 2. ??????????????SQL ? OrderMapper.xml?
         Map<String, Object> overview = this.baseMapper.getStatisticsOverview(startTime);
-
-        // 3. ????????SQL ? OrderMapper.xml?
         List<Map<String, Object>> chart = this.baseMapper.getStatisticsChart(startTime, dateFormat);
 
         result.put("overview", overview);
@@ -145,7 +141,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         String today = LocalDate.now().toString();
         Map<String, Object> stats = this.baseMapper.getTodayStats(today);
 
-        // ???? (??????? * 0.4???????? dish ? cost)
         BigDecimal revenue = new BigDecimal(stats.get("revenue").toString());
         BigDecimal profit = revenue.multiply(new BigDecimal("0.4")); // ????40%
 
@@ -158,8 +153,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     /**
-     * ?? getSevenDaysTrend (?7???)
-     * ????????????7?????
+     * ?7??????????????
      */
     @Override
     public List<Map<String, Object>> getSevenDaysTrend() {
