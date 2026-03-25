@@ -1,7 +1,5 @@
 package com.example.canteen.dto;
-
 import lombok.Data;
-
 import java.math.BigDecimal;
 @Data
 public class OrderRequest {

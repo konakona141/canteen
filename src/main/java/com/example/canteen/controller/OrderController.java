@@ -121,4 +121,26 @@ public class OrderController {
         orderService.update().set("status", status).eq("id", id).update();
         return Result.success();
     }
+
+    /**
+     * 管理端：取消订单并填写取消理由，同时回补库存
+     */
+    @PostMapping("/admin/order/cancel")
+    public Result<String> adminCancelOrder(@RequestParam Long orderId,
+                                           @RequestParam String reason) {
+        Order order = orderService.getById(orderId);
+        if (order == null) return Result.error("订单不存在");
+        if (!"1".equals(order.getStatus())) return Result.error("该订单状态无法取消");
+        // 回补库存
+        dishService.update()
+                .setSql("stock = stock + " + order.getQuantity())
+                .eq("id", order.getDishId()).update();
+        // 更新状态和取消理由
+        orderService.update()
+                .set("status", "3")
+                .set("cancel_time", LocalDateTime.now())
+                .set("cancel_reason", reason)
+                .eq("id", orderId).update();
+        return Result.success("取消成功");
+    }
 }

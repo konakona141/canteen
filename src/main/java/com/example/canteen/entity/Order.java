@@ -1,15 +1,12 @@
 package com.example.canteen.entity;
 
 import java.math.BigDecimal;
-
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 /**
@@ -42,7 +39,7 @@ public class Order {
     /** 总成本：下单时计算并存入 */
     private BigDecimal totalCost;
 
-    /** 状态 (PENDING, PAID, etc.) */
+    /** 状态 */
     private String status;
 
     /** 下单时间 */
@@ -50,5 +47,13 @@ public class Order {
 
     private String address;
 
+    /** 配送方式：delivery=配送上门，pickup=自取 */
+    private String deliveryType;
+
+    /** 预售商品的配送/取货时间段，格式如 2026-03-19 11:00-12:00 */
+    private String deliveryTime;
+
+    /** 管理端取消订单时填写的取消理由 */
+    private String cancelReason;
 
 }
